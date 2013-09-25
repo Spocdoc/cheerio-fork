@@ -2,6 +2,7 @@ var expect = require('expect.js'),
     $ = require('../'),
     food = require('./fixtures').food,
     fruits = require('./fixtures').fruits;
+    text = require('./fixtures').text;
 
 describe('$(...)', function() {
 
@@ -63,6 +64,22 @@ describe('$(...)', function() {
     });
 
     it('should only match immediate children, not ancestors');
+
+  });
+
+  describe('.contents', function() {
+
+    it('() : should get all contents', function() {
+      expect($('p', text).contents()).to.have.length(5);
+    });
+
+    it('() : should include text nodes', function() {
+      expect($('p', text).contents().first()[0].type).to.equal('text');
+    });
+
+    it('() : should include comment nodes', function() {
+      expect($('p', text).contents().last()[0].type).to.equal('comment');
+    });
 
   });
 
@@ -143,6 +160,7 @@ describe('$(...)', function() {
     it('() : should get all the siblings', function() {
       expect($('.orange', fruits).siblings()).to.have.length(2);
       expect($('#fruits', fruits).siblings()).to.have.length(0);
+      expect($('.apple, .carrot', food).siblings()).to.have.length(3);
     });
 
     it('(selector) : should get all siblings that match the selector', function() {
@@ -301,6 +319,18 @@ describe('$(...)', function() {
     it('(selector) : should not consider nested elements', function() {
       var lis = $(fruits).filter('li');
       expect(lis).to.have.length(0);
+    });
+
+    it('(selection) : should reduce the set of matched elements to those that are contained in the provided selection', function() {
+      var $fruits = $('li', fruits);
+      var $pear = $fruits.filter('.pear, .apple');
+      expect($fruits.filter($pear)).to.have.length(2);
+    });
+
+    it('(element) : should reduce the set of matched elements to those that specified directly', function() {
+      var $fruits = $('li', fruits);
+      var pear = $fruits.filter('.pear')[0];
+      expect($fruits.filter(pear)).to.have.length(1);
     });
 
     it('(fn) : should reduce the set of matched elements to those that pass the function\'s test', function() {

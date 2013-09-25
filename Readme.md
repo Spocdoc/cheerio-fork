@@ -143,6 +143,23 @@ $('.apple').attr('id', 'favorite').html()
 
 > See http://api.jquery.com/attr/ for more information
 
+#### .data( name, value )
+Method for getting and setting data attributes. Gets or sets the data attribute value for only the first element in the matched set. 
+
+```js
+$('<div data-apple-color="red"></div>').data()
+//=> { appleColor: 'red' }
+
+$('<div data-apple-color="red"></div>').data('data-apple-color')
+//=> 'red'
+
+var apple = $('.apple').data('kind', 'mac')
+apple.data('kind')
+//=> 'mac'
+```
+
+> See http://api.jquery.com/data/ for more information
+
 #### .val( [value] )
 Method for getting and setting the value of input, select, and textarea. Note: Support for `map`, and `function` has not been added yet.
 
@@ -202,8 +219,10 @@ $('.apple').addClass('red').removeClass().html()
 > See http://api.jquery.com/removeClass/ for more information.
 
 #### .is( selector )
+#### .is( element )
+#### .is( selection )
 #### .is( function(index) )
-Checks the current list of elements and returns `true` if _any_ of the elements match the selector. If using a predicate function, the function is executed in the context of the selected element, so `this` refers to the current element.
+Checks the current list of elements and returns `true` if _any_ of the elements match the selector. If using an element or Cheerio selection, returns `true` if _any_ of the elements match. If using a predicate function, the function is executed in the context of the selected element, so `this` refers to the current element.
 
 
 ### Traversing
@@ -313,6 +332,14 @@ $('#fruits').children('.pear').text()
 //=> Pear
 ```
 
+#### .contents()
+Gets the children of each element in the set of matched elements, including text and comment nodes.
+
+```js
+$('#fruits').contents().length
+//=> 3
+```
+
 #### .each( function(index, element) )
 Iterates over a cheerio object, executing a function for each matched element. When the callback is fired, the function is fired in the context of the DOM element, so `this` refers to the current element, which is equivalent to the function parameter `element`. To break out of the `each` loop early, return with `false`.
 
@@ -338,9 +365,9 @@ $('li').map(function(i, el) {
 //=> apple, orange, pear
 ```
 
-#### .filter( selector ) <br /> .filter( function(index) )
+#### .filter( selector ) <br /> .filter( selection ) <br /> .filter( element ) <br /> .filter( function(index) )
 
-Iterates over a cheerio object, reducing the set of selector elements to those that match the selector or pass the function's test. If using the function method, the function is executed in the context of the selected element, so `this` refers to the current element.
+Iterates over a cheerio object, reducing the set of selector elements to those that match the selector or pass the function's test. When a Cheerio selection is specified, return only the elements contained in that selection. When an element is specified, return only that element (if it is contained in the original selection). If using the function method, the function is executed in the context of the selected element, so `this` refers to the current element.
 
 Selector:
 

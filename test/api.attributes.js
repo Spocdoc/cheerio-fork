@@ -3,6 +3,7 @@ var expect = require('expect.js');
 var $ = require('../');
 var fruits = require('./fixtures').fruits;
 var vegetables = require('./fixtures').vegetables;
+var chocolates = require('./fixtures').chocolates;
 var inputs = require('./fixtures').inputs;
 
 describe('$(...)', function() {
@@ -50,6 +51,17 @@ describe('$(...)', function() {
       expect(attrs['data-url']).to.equal('http://apple.com');
     });
 
+    it('(key, function) : should call the function and update the attribute with the return value', function() {
+      var $fruits = $(fruits);
+      $fruits.attr('id', function(index, value) {
+        expect(index).to.equal(0);
+        expect(value).to.equal('fruits');
+        return 'ninja';
+      });
+      var attrs = $fruits.attr();
+      expect(attrs.id).to.equal('ninja');
+    });
+
     it('(key, value) : should correctly encode then decode unsafe values', function() {
       var $apple = $('.apple', fruits);
       $apple.attr('href', 'http://github.com/"><script>alert("XSS!")</script><br');
@@ -67,6 +79,71 @@ describe('$(...)', function() {
       expect($apple.attr('data-test')).to.equal('1');
     });
   });
+
+  describe('.data', function() {
+
+    it('() : should get all data attributes', function() {
+      var data = $('.linth', chocolates).data();
+      expect(data).to.eql({
+        highlight: 'Lindor',
+        origin: 'swiss'
+      });
+    });
+
+    it('() : no data attribute should return an empty object', function() {
+      var data = $('.cailler', chocolates).data();
+      expect(data).to.be.empty();
+    });
+
+    it('(invalid key) : invalid data attribute should return `undefined` ', function() {
+      var data = $('.frey', chocolates).data('lol');
+      expect(data).to.be(undefined);
+    });
+
+    it('(valid key) : valid data attribute should get value', function() {
+      var highlight = $('.linth', chocolates).data('highlight');
+      var origin = $('.linth', chocolates).data('origin');
+
+      expect(highlight).to.equal('Lindor');
+      expect(origin).to.equal('swiss');
+    });
+
+    it('(hyphen key) : data addribute with hyphen should be camelized ;-)', function() {
+      var data = $('.frey', chocolates).data();
+      expect(data).to.eql({
+        taste: 'sweet',
+        bestCollection: 'Mahony'
+      });
+    });
+
+    it('(key, value) : should set data attribute', function() {
+      // Adding as object.
+      var a = $('.frey', chocolates).data({
+        balls: 'giandor'
+      });
+      // Adding as string.
+      var b = $('.linth', chocolates).data('snack', 'chocoletti');
+
+      expect(a.data('balls')).to.eql('giandor');
+      expect(b.data('snack')).to.eql('chocoletti');
+    });
+
+    it('(map) : object map should set multiple data attributes', function() {
+      var data = $('.linth', chocolates).data({
+        id: 'Cailler',
+        flop: 'Pippilotti Rist',
+        top: 'Frigor',
+        url: 'http://www.cailler.ch/'
+      })['0'].data;
+
+      expect(data.id).to.equal('Cailler');
+      expect(data.flop).to.equal('Pippilotti Rist');
+      expect(data.top).to.equal('Frigor');
+      expect(data.url).to.equal('http://www.cailler.ch/');
+    });
+
+  });
+
 
   describe('.val', function() {
 		it('.val(): on select should get value', function() {
@@ -272,27 +349,53 @@ describe('$(...)', function() {
   });
 
   describe('.is', function () {
-    it('() should return false', function  () {
-      expect($('li.apple', fruits).is()).to.be(false)
-    })
-    it('(true selector) should return true', function () {
-      expect($('#vegetables', vegetables).is('ul')).to.be(true)
-    })
-    it('(false selector) should return false', function () {
-      expect($('#vegetables', vegetables).is('div')).to.be(false)
-    })
-    it('(true predicate) should return true', function () {
+    it('() : should return false', function() {
+      expect($('li.apple', fruits).is()).to.be(false);
+    });
+
+    it('(true selector) : should return true', function() {
+      expect($('#vegetables', vegetables).is('ul')).to.be(true);
+    });
+
+    it('(false selector) : should return false', function() {
+      expect($('#vegetables', vegetables).is('div')).to.be(false);
+    });
+
+    it('(true selection) : should return true', function() {
+      var $vegetables = $('li', vegetables);
+      expect($vegetables.is($vegetables.eq(1))).to.be(true);
+    });
+
+    it('(false selection) : should return false', function() {
+      var $vegetableList = $(vegetables);
+      var $vegetables = $vegetableList.find('li');
+      expect($vegetables.is($vegetableList)).to.be(false);
+    });
+
+    it('(true element) : should return true', function() {
+      var $vegetables = $('li', vegetables);
+      expect($vegetables.is($vegetables[0])).to.be(true);
+    });
+
+    it('(false element) : should return false', function() {
+      var $vegetableList = $(vegetables);
+      var $vegetables = $vegetableList.find('li');
+      expect($vegetables.is($vegetableList[0])).to.be(false);
+    });
+
+    it('(true predicate) : should return true', function() {
       var result = $('li', fruits).is(function() {
-        return this.hasClass('pear')
-      })
-      expect(result).to.be(true)
-    })
-    it('(false predicate) should return false', function () {
+        return this.hasClass('pear');
+      });
+      expect(result).to.be(true);
+    });
+
+    it('(false predicate) : should return false', function () {
       var result = $('li', fruits).last().is(function() {
-        return this.name === 'ul'
-      })
-      expect(result).to.be(false)
-    })
-  })
+        return this.name === 'ul';
+      });
+      expect(result).to.be(false);
+    });
+  });
 
 });
