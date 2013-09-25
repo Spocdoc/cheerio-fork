@@ -18,7 +18,8 @@
   },
   "LOCAL dependencies": {
     "htmlparser2-fork" : "3.x",
-    "cheerio-select-fork" : "*"
+    "cheerio-select-fork" : "*",
+    "domelementtype-fork" : "*"
   },
   "devDependencies": {
     "mocha" : "*",
