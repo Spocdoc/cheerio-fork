@@ -13,12 +13,12 @@
     "node": ">= 0.6"
   },
   "dependencies": {
-    "cheerio-select" : "*",
     "underscore" : "~1.4",
     "entities" : "0.x"
   },
   "LOCAL dependencies": {
-    "htmlparser2-fork" : "3.x"
+    "htmlparser2-fork" : "3.x",
+    "cheerio-select-fork" : "*"
   },
   "devDependencies": {
     "mocha" : "*",
