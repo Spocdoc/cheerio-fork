@@ -1,4 +1,4 @@
-Node = require './node'
+ElementType = require "domelementtype-fork"
 {evaluate,update} = require './parse'
 $ = require './static'
 
@@ -44,5 +44,12 @@ Object.defineProperty Node.prototype, "innerHTML",
   enumerable: true
   configurable: true
 
+Object.defineProperty Node.prototype, "nodeValue",
+  get: -> if @nodeType is ElementType.Text then @data else null
+  set: (value) ->
+    @data = ''+value if @nodeType is ElementType.Text
+    value
+  enumerable: true
+  configurable: true
 
 
