@@ -1,5 +1,6 @@
 ElementType = require "domelementtype-fork"
 {evaluate,update} = require './parse'
+{encode,decode} = require('./utils')
 $ = require './static'
 
 module.exports = class Node
@@ -35,6 +36,9 @@ module.exports = class Node
 
   hasChildNodes: -> !!@childNodes.length
 
+  getAttribute: (attr) ->
+    if (attributes = @attributes) and attributes.hasOwnProperty attr then attributes[attr] else null
+
 Object.defineProperty Node.prototype, "innerHTML",
   get: -> if children = @childNodes then $.html children else null
   set: (str) ->
@@ -44,12 +48,28 @@ Object.defineProperty Node.prototype, "innerHTML",
   enumerable: true
   configurable: true
 
-Object.defineProperty Node.prototype, "nodeValue",
-  get: -> if @nodeType is ElementType.Text then @data else null
+Object.defineProperty Node.prototype, "textContent",
+  get: -> $.text [this]
   set: (value) ->
-    @data = ''+value if @nodeType is ElementType.Text
+    if this.nodeType is ElementType.Text
+      @nodeValue = value
+    else
+      @childNodes =
+        data: encode(value),
+        nodeType: ElementType.Text,
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
+        childNodes: []
+      update this
     value
   enumerable: true
   configurable: true
 
-
+Object.defineProperty Node.prototype, "nodeValue",
+  get: -> if @nodeType is ElementType.Text then decode @data else null
+  set: (value) ->
+    @data = encode ''+value if @nodeType is ElementType.Text
+    value
+  enumerable: true
+  configurable: true
