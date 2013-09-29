@@ -73,3 +73,13 @@ Object.defineProperty Node.prototype, "nodeValue",
     value
   enumerable: true
   configurable: true
+
+Object.defineProperty Node.prototype, "firstChild",
+  get: -> if childNodes = @childNodes then childNodes[0] else null
+  enumerable: true
+  configurable: true
+
+Object.defineProperty Node.prototype, "lastChild",
+  get: -> if childNodes = @childNodes then childNodes[childNodes.length-1] else null
+  enumerable: true
+  configurable: true
