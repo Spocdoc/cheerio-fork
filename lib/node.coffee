@@ -83,3 +83,11 @@ Object.defineProperty Node.prototype, "lastChild",
   get: -> if childNodes = @childNodes then childNodes[childNodes.length-1] else null
   enumerable: true
   configurable: true
+
+Object.defineProperty Node.prototype, "className",
+  get: ->
+    @attributes?.class
+  set: (value) ->
+    (@attributes ||= {}).class = value
+  enumerable: true
+  configurable: true
