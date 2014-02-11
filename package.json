@@ -14,9 +14,8 @@
   },
   "dependencies": {
     "underscore" : "~1.4",
-    "entities" : "0.x"
-  },
-  "LOCAL dependencies": {
+    "entities" : "0.x",
+
     "htmlparser2-fork" : "3.x",
     "cheerio-select-fork" : "*",
     "domelementtype-fork" : "*"

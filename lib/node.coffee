@@ -39,6 +39,10 @@ module.exports = class Node
   getAttribute: (attr) ->
     if (attributes = @attributes) and attributes.hasOwnProperty attr then attributes[attr] else null
 
+  setAttribute: (name, value) ->
+    (@attributes ||= {})[name] = value
+    return
+
 Object.defineProperty Node.prototype, "innerHTML",
   get: -> if children = @childNodes then $.html children else null
   set: (str) ->
