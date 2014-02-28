@@ -40,7 +40,7 @@ module.exports = class Node
     if (attributes = @attributes) and attributes.hasOwnProperty attr then attributes[attr] else null
 
   setAttribute: (name, value) ->
-    (@attributes ||= {})[name] = value
+    (@attributes ||= {})[name] = ''+value
     return
 
 Object.defineProperty Node.prototype, "innerHTML",
